@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendre sur Vinted : le guide pratique</title>
+  <style>
+    :root {
+      --accent: #09b1ba;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --bg: #fafaf8;
+      --card: #ffffff;
+      --line: #e5e5e0;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+
+    /* Barre de progression */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0;
+      background: var(--accent);
+      z-index: 100;
+    }
+
+    /* Navigation latérale */
+    nav.side {
+      position: fixed;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      z-index: 50;
+    }
+    nav.side a {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    nav.side a span.dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      transition: all 0.3s;
+    }
+    nav.side a.active { color: var(--ink); }
+    nav.side a.active span.dot { background: var(--accent); border-color: var(--accent); }
+
+    /* Pages défilantes */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .page.hero {
+      background: linear-gradient(135deg, #09b1ba 0%, #067c83 100%);
+      color: white;
+      text-align: center;
+      border-bottom: none;
+    }
+    .content {
+      max-width: 720px;
+      width: 100%;
+    }
+    .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .hero .eyebrow { color: rgba(255,255,255,0.85); }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.1;
+      margin: 0 0 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      line-height: 1.2;
+      margin: 0 0 1.2rem;
+      letter-spacing: -0.01em;
+    }
+    h3 { font-size: 1.1rem; margin: 1.8rem 0 0.4rem; }
+    p { margin: 0 0 1rem; color: #3a3a3c; font-size: 1.05rem; }
+    .lead { font-size: 1.2rem; color: var(--muted); }
+    .hero p { color: rgba(255,255,255,0.92); }
+
+    .cta {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.9rem 1.8rem;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.5rem 1.8rem;
+      margin: 1.2rem 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .card strong { color: var(--accent); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .grid div {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.2rem;
+    }
+    .grid .num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .warn {
+      border-left: 4px solid #e8891d;
+      background: #fff8ef;
+      padding: 1rem 1.2rem;
+      border-radius: 8px;
+      margin: 1.2rem 0;
+    }
+
+    /* Animation d'apparition */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+      nav.side { display: none; }
+      .page { padding: 4rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav class="side">
+  <a href="#accueil"><span class="dot"></span>Accueil</a>
+  <a href="#compte"><span class="dot"></span>Compte</a>
+  <a href="#annonces"><span class="dot"></span>Annonces</a>
+  <a href="#prix"><span class="dot"></span>Prix</a>
+  <a href="#alertes"><span class="dot"></span>Alertes</a>
+  <a href="#recours"><span class="dot"></span>Recours</a>
+</nav>
+
+<section class="page hero" id="accueil">
+  <div class="content reveal">
+    <div class="eyebrow">Guide pratique</div>
+    <h1>Vendre sur Vinted,<br>sereinement.</h1>
+    <p class="lead" style="color: rgba(255,255,255,0.9)">
+      Des annonces qui se vendent, un compte qui reste en règle. Fais défiler pour découvrir la méthode.
+    </p>
+    <a class="cta" href="#compte">Commencer</a>
+  </div>
+</section>
+
+<section class="page" id="compte">
+  <div class="content reveal">
+    <div class="eyebrow">Chapitre 01</div>
+    <h2>Préparer son compte</h2>
+    <p class="lead">Un profil cohérent inspire confiance, aux acheteurs comme à la plateforme.</p>
+    <div class="card">
+      <h3>Un profil complet et réel</h3>
+      <p>Prénom, photo de profil claire et courte description. Rien de trompeur, rien de vide.</p>
+    </div>
+    <div class="card">
+      <h3>Un seul compte</h3>
+      <p>Vinted interdit en principe de détenir plusieurs comptes. Pour séparer des activités, demande conseil au support plutôt que d'en ouvrir un second.</p>
+    </div>
+    <div class="card">
+      <h3>La vérification d'identité</h3>
+      <p>Quand elle est demandée, passe uniquement par les canaux officiels de l'application, avec des documents lisibles et à jour. Une vérification sert à sécuriser les transactions, ce n'est pas une sanction.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="annonces">
+  <div class="content reveal">
+    <div class="eyebrow">Chapitre 02</div>
+    <h2>Des annonces qui vendent</h2>
+    <p class="lead">La transparence est le meilleur argument de vente.</p>
+    <div class="grid">
+      <div><div class="num">01</div><p>Photos en lumière naturelle, fond neutre, plusieurs angles.</p></div>
+      <div><div class="num">02</div><p>Marque, modèle, taille, matière et état réel.</p></div>
+      <div><div class="num">03</div><p>Mesures à plat quand c'est utile, par exemple « aisselles : 52 cm ».</p></div>
+    </div>
+    <div class="warn">
+      <strong>À éviter :</strong> photos empruntées ailleurs, articles que tu ne possèdes pas, contrefaçons. Ces annonces sont retirées et peuvent entraîner une suspension.
+    </div>
+  </div>
+</section>
+
+<section class="page" id="prix">
+  <div class="content reveal">
+    <div class="eyebrow">Chapitre 03</div>
+    <h2>Fixer le bon prix</h2>
+    <p class="lead">Regarde les ventes récentes du même modèle, pas seulement les annonces en cours, souvent surévaluées.</p>
+    <div class="card">
+      <p>Un prix légèrement sous le marché se vend plus vite. Calcule ensuite ta marge en tenant compte des frais d'envoi, qui dépendent du poids et du transporteur.</p>
+      <p>Vérifie les tarifs actuels directement dans l'application, car ils évoluent.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="alertes">
+  <div class="content reveal">
+    <div class="eyebrow">Chapitre 04</div>
+    <h2>Rester dans les règles</h2>
+    <p class="lead">Les systèmes de sécurité repèrent surtout les schémas inhabituels, plus que les actions isolées.</p>
+    <div class="card">
+      <h3>Un rythme naturel</h3>
+      <p>Étale tes mises en ligne. Des dizaines d'annonces publiées ou supprimées en quelques minutes attirent l'attention.</p>
+    </div>
+    <div class="card">
+      <h3>Des échanges sur la plateforme</h3>
+      <p>Ne partage ni ton numéro ni tes réseaux dans les messages, et ne paie jamais hors de Vinted. Les transactions externes ne sont pas protégées.</p>
+    </div>
+    <div class="card">
+      <h3>Des ventes fiables</h3>
+      <p>Décris fidèlement tes articles et réponds vite aux acheteurs. Peu de litiges, c'est la meilleure protection de ta réputation.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="recours">
+  <div class="content reveal">
+    <div class="eyebrow">Chapitre 05</div>
+    <h2>En cas de restriction</h2>
+    <p class="lead">Ne crée jamais un nouveau compte : cela aggrave presque toujours la situation.</p>
+    <div class="card">
+      <p>Lis d'abord la notification, qui indique le motif. Puis contacte l'assistance Vinted depuis l'application et explique calmement la situation, en joignant les éléments demandés.</p>
+      <p>Conserve tes échanges et l'historique de tes transactions : ce sont tes preuves si tu dois contester une décision.</p>
+    </div>
+    <a class="cta" href="#accueil" style="background: var(--accent); color: white;">Revenir au début</a>
+  </div>
+</section>
+
+<footer>
+  Guide indépendant, non affilié à Vinted. Les règles et tarifs évoluent : consulte toujours les informations officielles dans l'application.
+</footer>
+
+<script>
+  // Barre de progression
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  // Apparition au défilement
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Lien actif dans la navigation
+  const links = document.querySelectorAll('nav.side a');
+  const pages = document.querySelectorAll('section.page');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    pages.forEach(p => {
+      if (window.scrollY >= p.offsetTop - window.innerHeight / 2) current = p.id;
+    });
+    links.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
